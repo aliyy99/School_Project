@@ -10,9 +10,36 @@ public class Main {
     static String[] months = {"January","February","March","April","May","June",
                               "July","August","September","October","November","December"};
     
-
+    static int[][][] profitdata=new int[MONTHS][DAYS][COMMS];
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
+        for(int i=0;i<MONTHS;i++){
+            File file=new File("src/Data_Files/"+months[i]+".txt");
+            try{
+                Scanner sc=new Scanner(file);
+                sc.nextLine(); //Day,commodity,profit SKİP
+                while (sc.hasNextLine()){
+                    String line=sc.nextLine();
+                    String[] parts=line.split(",");
+                    int day=Integer.parseInt(parts[0])-1;
+                    String commodity=parts[1];
+                    int profit=Integer.parseInt(parts[2]);
+
+                    int commind=-1;
+                    for(int a=0;a<COMMS;a++){
+                        if(commodities[a].equals(commodity)){
+                            commind=a;
+                            break;
+                        }
+                    }
+                    profitdata[i][day][commind]=profit;
+                }
+                sc.close();
+            }
+            catch (FileNotFoundException e){
+                System.out.println("file couldn't found ");
+            }
+        }
     }
 
     // ======== 10 REQUIRED METHODS (Students fill these) ========
