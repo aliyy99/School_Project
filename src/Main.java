@@ -14,7 +14,7 @@ public class Main {
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
         for(int i=0;i<MONTHS;i++){
-            File file=new File("src/Data_Files/"+months[i]+".txt");
+            File file=new File("Data_Files/"+months[i]+".txt");
             try{
                 Scanner sc=new Scanner(file);
                 sc.nextLine(); //Day,commodity,profit SKİP
@@ -45,11 +45,41 @@ public class Main {
     // ======== 10 REQUIRED METHODS (Students fill these) ========
 
     public static String mostProfitableCommodityInMonth(int month) {
-        return "DUMMY"; 
+        if(month<0 || month>11){
+            return "INVALID_MONTH";
+        }
+        else {
+            int[] commodity={0,0,0,0,0}; //gold,oil,silver,wheat,copper
+            for(int i=0;i<COMMS;i++){
+                for(int j=0;j<DAYS;j++){
+                    commodity[i]+=profitdata[month][j][i];
+                }
+            }
+            int max=commodity[0];
+            int index=0;
+            for(int a=1;a<commodity.length;a++){
+                if(commodity[a]>max){
+                    max=commodity[a];
+                    index=a;
+                }
+            }
+            return commodities[index]+" "+max;
+        }
     }
 
     public static int totalProfitOnDay(int month, int day) {
-        return 1234;
+        if(month<0 || month>11){
+            return -99999;
+        } else if (day<1 || day>DAYS) {
+            return -99999;
+        }
+        else {
+            int sum=0;
+            for (int i=0;i<COMMS;i++){
+                sum+=profitdata[month][day-1][i];
+            }
+            return sum;
+        }
     }
 
     public static int commodityProfitInRange(String commodity, int from, int to) {
