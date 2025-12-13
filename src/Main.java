@@ -32,12 +32,14 @@ public class Main {
                             break;
                         }
                     }
-                    profitdata[i][day][commind]=profit;
+                    if(commind!=-1){  //Control. because commind can remain -1
+                        profitdata[i][day][commind]=profit;
+                    }
                 }
                 sc.close();
             }
             catch (FileNotFoundException e){
-                System.out.println("file couldn't found ");
+                System.out.println("file not found: "+months[i]+".txt");
             }
         }
     }
@@ -55,7 +57,7 @@ public class Main {
                     commodity[i]+=profitdata[month][j][i];
                 }
             }
-            int max=commodity[0];
+            int max=commodity[0]; //profit can be negative
             int index=0;
             for(int a=1;a<commodity.length;a++){
                 if(commodity[a]>max){
@@ -83,15 +85,90 @@ public class Main {
     }
 
     public static int commodityProfitInRange(String commodity, int from, int to) {
-        return 1234;
+        boolean right=true;
+        int index_com=0;
+        for (int i=0;i<commodities.length;i++){
+            if(commodity.toLowerCase().equals(commodities[i].toLowerCase())){
+                index_com=i;
+                right=false;
+                break;
+            }
+        }
+        if(right){
+            return -99999;
+        } else if (from<1 || from>28) {
+            return -99999;
+        }
+        else if (to<1 || to>28) {
+            return -99999;
+        } else if (from>to) {
+            return -99999;
+        }
+        else {
+            int sum=0;
+            for(int i=0;i<MONTHS;i++){
+                for(int a=from-1;a<=to-1;a++){
+                    sum+=profitdata[i][a][index_com];
+                }
+            }
+            return sum;
+        }
+
     }
 
     public static int bestDayOfMonth(int month) { 
-        return 1234; 
+        if(month<0 || month>=MONTHS){
+            return -1;
+        }
+        int max=0;
+        for(int a=0;a<commodities.length;a++){
+            max+=profitdata[month][0][a];
+        }
+        int day=1;
+        for(int i=1;i<DAYS;i++){
+            int sum=0;
+            for(int a=0;a<commodities.length;a++){
+                sum+=profitdata[month][i][a];
+            }
+            if(sum>max){
+                max=sum;
+                day=i+1;
+            }
+        }
+        return day;
     }
     
     public static String bestMonthForCommodity(String comm) { 
-        return "DUMMY"; 
+        boolean right=true;
+        int index=0;
+        for (int i=0;i<commodities.length;i++){
+            if (commodities[i].toLowerCase().equals(comm.toLowerCase())){
+                right=false;
+                index=i;
+                break;
+            }
+        }
+        if(right){
+            return "INVALID_COMMODITY";
+        }
+        else {
+            int max=0;
+            int index_month=0;
+            for (int i=0;i<DAYS;i++){
+                max+=profitdata[0][i][index];
+            }
+            for(int i=1;i<MONTHS;i++){
+                int sum=0;
+                for (int a=0;a<DAYS;a++){
+                    sum+=profitdata[i][a][index];
+                }
+                if(sum>max){
+                    max=sum;
+                    index_month=i;
+                }
+            }
+            return months[index_month];
+        }
     }
 
     public static int consecutiveLossDays(String comm) { 
